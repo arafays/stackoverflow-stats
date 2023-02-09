@@ -1,7 +1,36 @@
 // routes/hello/[name].ts
-export default eventHandler((event) => {
-	const { user } = event?.context?.params;
+export default eventHandler( async (event) => {
+	const { userId } = event?.context?.params;
 	const { theme } = event?.context?.query;
+
+	const fetchuser = (userId) => {
+		console.log(userId.value);
+		return fetch(
+			`https://api.stackexchange.com/2.3/users/${userId.value}?site=stackoverflow`
+		)
+	};
+
+	const fetchAccountStats = (accountId:) => {
+		return fetch(
+			`https://api.stackexchange.com/2.3/users/${accountId.value}/associated`
+		)
+	};
+	
+		const user = await fetchuser(userId);
+		const account = await fetchAccountStats(user?.items[0].account_id);
+
+  const stats = {
+    reputation: user.items[0].reputation,
+    badges: user.items[0].badge_counts,
+    account: account.items[0].site_name,
+    account_id: account.items[0].account_id,
+    account_url: account.items[0].site_url,
+    badges: {
+      gold: account.items[0].badge_counts.gold,
+      silver: account.items[0].badge_counts.silver,
+      bronze: account.items[0].badge_counts.bronze,
+    },
+    }
 
 	const useTheme = theme => {
 		switch (theme) {
