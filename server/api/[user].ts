@@ -10,7 +10,7 @@ export default eventHandler( async (event) => {
 		)
 	};
 
-	const fetchAccountStats = (accountId:) => {
+	const fetchAccountStats = (accountId) => {
 		return fetch(
 			`https://api.stackexchange.com/2.3/users/${accountId.value}/associated`
 		)
