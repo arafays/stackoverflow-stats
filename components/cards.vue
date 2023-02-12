@@ -25,10 +25,12 @@
         </button>
       </div>
     </div>
-    <div v-if="validUserId" class="grid grid-cols-2 gap-4">
+    <div v-if="validUserId" class="grid grid-cols-1 gap-4">
       <!-- make a  tailwind grid where 2 cards are shown here -->
       <img :src="`api\${userId}`" alt="" />
-      {{ userData }}
+      <code class="">
+        {{ userData }}
+      </code>
     </div>
     <div
       class="mt-4 text-transparent bg-clip-text bg-gradient-to-br from-purple-100 to-pink-100"
@@ -42,24 +44,15 @@
 <script setup>
 import { ref } from "vue";
 
-const userId = ref("");
+const userId = ref("1968212");
 const userData = ref({});
 const validUserId = ref(false);
 
-const fetchuser = (userId) => {
-  console.log(userId.value);
-  return fetch(
-    `https://api.stackexchange.com/2.3/users/${userId.value}?site=stackoverflow`
-  )
-    .then((res) => res.json())
-    .then((data) => {
-      userData.value = data;
-      if (data.items.length > 0) {
-        validUserId.value = true;
-      } else {
-        validUserId.value = false;
-      }
-    });
+const fetchuser = async () => {
+  await useFetch(`api/user/${userId.value}`).then((res) => {
+    userData.value = res.data;
+    validUserId.value = true;
+  });
 };
 </script>
 
